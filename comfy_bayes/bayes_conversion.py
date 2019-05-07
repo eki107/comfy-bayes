@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import beta
 
-from conversion_test.utils import lbeta
+from comfy_bayes.utils import lbeta
 
 """
 resources:
