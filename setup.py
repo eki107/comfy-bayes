@@ -9,5 +9,5 @@ setup(
     author='ssoos',
     author_email='ssoos@pixelfederation.com',
     description='comfy bayesion a/b test tools for lazy analysts',
-    requires=['numpy', 'scipy']
+    requires=['numpy', 'scipy', 'matplotlib', 'pandas']
 )
