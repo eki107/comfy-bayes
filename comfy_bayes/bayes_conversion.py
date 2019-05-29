@@ -1,13 +1,13 @@
 import numpy as np
 from scipy.stats import beta
 
-from comfy_bayes.utils import lbeta
+# from comfy_bayes.utils import lbeta
+from scipy.special import betaln
 
 """
 resources:
-- Vidov blog
-- viacero A/B blog-veci
-- evan miller 
+- https://github.com/Vidogreg/bayes-ab-testing/tree/master/bayes-conversion-test
+- evan miller: https://www.evanmiller.org/bayesian-ab-testing.html
 """
 
 
@@ -29,6 +29,12 @@ class ConversionTest:
 
         self.total_a = total_a
         self.total_b = total_b
+
+        self.failures_a = total_a - successes_a
+        self.failures_b = total_b - successes_b
+
+        self.beta_func_a = beta(self.successes_a, self.failures_a)
+        self.beta_func_b = beta(self.successes_b, self.failures_b)
 
     def evaluate(self):
         """Main function that evaluates the test"""
@@ -68,8 +74,8 @@ class ConversionTest:
         """
         total = 1.0
         for i in range(alpha_param_a):
-            total -= np.exp(lbeta(alpha_param_b + i, beta_param_b + beta_param_a) - np.log(beta_param_a + i)
-                            - lbeta(1 + i, beta_param_a) - lbeta(alpha_param_b, beta_param_b))
+            total -= np.exp(betaln(alpha_param_b + i, beta_param_b + beta_param_a) - np.log(beta_param_a + i)
+                            - betaln(1 + i, beta_param_a) - betaln(alpha_param_b, beta_param_b))
 
         return total
 
@@ -107,14 +113,14 @@ class ConversionTest:
                                                                                         beta_param_b)
 
         numerator = (
-                lbeta(alpha_param_a + 1, beta_param_a)
-                - lbeta(alpha_param_a, beta_param_a)
+                betaln(alpha_param_a + 1, beta_param_a)
+                - betaln(alpha_param_a, beta_param_a)
                 + np.log(1 - a_plus_one_better_then_b)
         )
 
         denominator = (
-                lbeta(alpha_param_b + 1, beta_param_b)
-                - lbeta(alpha_param_b, beta_param_b)
+                betaln(alpha_param_b + 1, beta_param_b)
+                - betaln(alpha_param_b, beta_param_b)
                 + np.log(1 - a_better_than_b_plus_one)
         )
 
