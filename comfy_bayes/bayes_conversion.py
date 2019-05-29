@@ -130,3 +130,24 @@ class ConversionTest:
     @staticmethod
     def expected_uplift_b_over_a(alpha_param_a, beta_param_a, alpha_param_b, beta_param_b):
         return ConversionTest.expected_loss_b_over_a(alpha_param_b, beta_param_b, alpha_param_a, beta_param_a)
+
+    @staticmethod
+    def from_pandas(df, group_col="group", success_col="success"):
+        """
+        group_col should have values: A or B
+        success_col should have true or false boolean values
+        """
+
+        aggregated = (
+            df
+                .loc[:, [success_col, group_col]]
+                .groupby([success_col, group_col])
+                .size()
+        )
+
+        ab_test = ConversionTest(successes_a=aggregated.loc[True, 'A'],
+                                 total_a=aggregated.loc[False, 'A'] + aggregated.loc[True, 'A'],
+                                 successes_b=aggregated.loc[True, 'B'],
+                                 total_b=aggregated.loc[False, 'B'] + aggregated.loc[True, 'B'])
+
+        return ab_test

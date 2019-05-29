@@ -43,7 +43,7 @@ def draw_probability_distributions(test: ConversionTest):
 
 
 def draw_approximate_distribution_of_difference(test, samples=1_000_000, alpha=.05):
-    i = (1 - alpha) / 2, 1 - ((1 - alpha) / 2)
+    i = alpha / 2, (1 - alpha / 2)
 
     data = test.beta_func_b.rvs(samples) - test.beta_func_a.rvs(samples)
 
