@@ -36,6 +36,8 @@ class ConversionTest:
         self.beta_func_a = beta(self.successes_a, self.failures_a)
         self.beta_func_b = beta(self.successes_b, self.failures_b)
 
+        self.evaluated = False
+
     def evaluate(self):
         """Main function that evaluates the test"""
         alpha_param_a = self.successes_a + 1
@@ -56,6 +58,8 @@ class ConversionTest:
         # expected loss and uplifts
         self.loss_ = self.expected_loss_b_over_a(alpha_param_a, beta_param_a, alpha_param_b, beta_param_b)
         self.uplift_ = self.expected_uplift_b_over_a(alpha_param_a, beta_param_a, alpha_param_b, beta_param_b)
+
+        self.evaluated = True
 
         return self
 
@@ -151,3 +155,15 @@ class ConversionTest:
                                  total_b=aggregated.loc[False, 'B'] + aggregated.loc[True, 'B'])
 
         return ab_test
+
+    def get_stats(self):
+        if not self.evaluated:
+            self.evaluate()
+
+        return dict(b_better_than_a=self.b_better_than_a_,
+                    uplift=self.uplift_,
+                    loss=self.loss_,
+                    hdi_95_lower_a=self.hdi_95_lower_a_,
+                    hdi_95_lower_b=self.hdi_95_lower_b_,
+                    hdi_95_upper_a=self.hdi_95_upper_a_,
+                    hdi_95_upper_b=self.hdi_95_upper_b_)
