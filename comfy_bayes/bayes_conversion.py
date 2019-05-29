@@ -160,7 +160,9 @@ class ConversionTest:
         if not self.evaluated:
             self.evaluate()
 
-        return dict(b_better_than_a=self.b_better_than_a_,
+        return dict(conversion_a=self.successes_a/self.total_a,
+                    conversion_b=self.successes_b/self.total_b,
+                    b_better_than_a=self.b_better_than_a_,
                     uplift=self.uplift_,
                     loss=self.loss_,
                     hdi_95_lower_a=self.hdi_95_lower_a_,
