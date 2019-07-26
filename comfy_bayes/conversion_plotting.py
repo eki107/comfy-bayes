@@ -7,7 +7,7 @@ cpal = color_palette("Set2")
 
 
 def draw_probability_distributions(test: ConversionTest, ax=None):
-    ax = ax or plt.subplot(1, 1)
+    ax = ax or plt.subplots(1, 1)
 
     # get beta functions as pmf of our observations
     a_beta_func = test.beta_func_a
@@ -42,7 +42,7 @@ def draw_probability_distributions(test: ConversionTest, ax=None):
 
 
 def draw_approximate_distribution_of_difference(test, samples=1_000_000, alpha=.05, ax=None):
-    ax = ax or plt.subplot(1, 1)
+    ax = ax or plt.subplots(1, 1)
 
     i = alpha / 2, (1 - alpha / 2)
 
