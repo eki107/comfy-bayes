@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='comfy-bayes',
-    version='0.0.11',
+    version='0.0.12',
     packages=['comfy_bayes'],
     url='https://github.com/eki107/comfy-bayes',
     license='',
