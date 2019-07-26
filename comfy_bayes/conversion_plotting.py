@@ -62,7 +62,7 @@ def draw_approximate_distribution_of_difference(test, samples=1_000_000, alpha=.
         patches[-i-1].set_alpha(.33)
 
     ax.yaxis.set_visible(False)
-    ax.set_title(f"Approximate distribution off difference B-A (sampled from {samples:,d} draws", loc="right")
+    ax.set_title(f"Approximate distribution off difference B-A (sampled from {samples:,d} draws)", loc="right")
     ax.set_xticklabels(["{:,.2%}".format(tick) for tick in ax.get_xticks()])
 
     return dplot
