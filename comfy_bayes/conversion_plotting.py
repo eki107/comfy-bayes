@@ -6,8 +6,9 @@ from seaborn.palettes import color_palette
 cpal = color_palette("Set2")
 
 
-def draw_probability_distributions(test: ConversionTest, ax=None):
-    ax = ax or plt.subplots(1, 1)[1]
+def draw_probability_distributions(test: ConversionTest, ax=None, title=None):
+    if ax is None:
+        ax = plt.axes()
 
     # get beta functions as pmf of our observations
     a_beta_func = test.beta_func_a
@@ -32,7 +33,11 @@ def draw_probability_distributions(test: ConversionTest, ax=None):
 
     # some other cosmetic options: hide Y axis which we do not need, set title and reformat % on X axis
     ax.yaxis.set_visible(False)
-    ax.set_title("Conversion probability distributions of A and B, with 95% HDI", loc="right")
+
+    if title is None:
+        title = f"Conversion probability distributions of A and B, with 95% HDI"
+
+    ax.set_title(title, loc="right")
     ax.set_xticklabels(["{:,.2%}".format(tick) for tick in ax.get_xticks()])
 
     # add legend
@@ -41,8 +46,9 @@ def draw_probability_distributions(test: ConversionTest, ax=None):
     return dplot
 
 
-def draw_approximate_distribution_of_difference(test, samples=1_000_000, alpha=.05, ax=None):
-    ax = ax or plt.subplots(1, 1)[1]
+def draw_approximate_distribution_of_difference(test, samples=1_000_000, alpha=.05, ax=None, title=None):
+    if ax is None:
+        ax = plt.axes()
 
     i = alpha / 2, (1 - alpha / 2)
 
@@ -62,7 +68,11 @@ def draw_approximate_distribution_of_difference(test, samples=1_000_000, alpha=.
         patches[-i-1].set_alpha(.33)
 
     ax.yaxis.set_visible(False)
-    ax.set_title(f"Approximate distribution off difference B-A (sampled from {samples:,d} draws)", loc="right")
+
+    if title is None:
+        title = f"Approximate distribution off difference B-A (sampled from {samples:,d} draws)"
+
+    ax.set_title(title, loc="right")
     ax.set_xticklabels(["{:,.2%}".format(tick) for tick in ax.get_xticks()])
 
     return dplot
