@@ -4,6 +4,12 @@ from scipy.stats import beta
 # from comfy_bayes.utils import lbeta
 from scipy.special import betaln
 
+import matplotlib.pyplot as plt
+
+from seaborn.palettes import color_palette
+cpal = color_palette("Set2")
+
+
 """
 resources:
 - https://github.com/Vidogreg/bayes-ab-testing/tree/master/bayes-conversion-test
