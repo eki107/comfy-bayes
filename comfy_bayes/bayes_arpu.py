@@ -1,11 +1,7 @@
 import numpy as np
-
 import pandas as pd
-import scipy.stats
-
 import matplotlib.pyplot as plt
 
-from typing import Sequence
 
 class ARPUTest:
     def __init__(self,
@@ -99,24 +95,68 @@ class ARPUTest:
 
     # @staticmethod
     def draw_sampled_distribution_of_arpu_difference(self, ax=None):
-        ax = ax or plt.subplots()[1]
+        if ax is None:
+            fig, ax = plt.subplots()
 
-        ax.hist(self.sampled_arpu_diff_, 100, lw=1, edgecolor="white");
+        x = self.sampled_arpu_diff_
+        hdi = self.hdi_of_mcmc(self.sampled_arpu_diff_)
+
+        N, bins, patches = ax.hist(x, 100, lw=1, edgecolor="white", );
         ax.axvline(0, c="k", lw=2, alpha=.5)
 
+        for i in range(len(bins[bins <= hdi["lower"]])):
+            patches[i].set_alpha(.33)
+
+        for i in range(len(bins[bins >= hdi["upper"]])):
+            patches[-i-1].set_alpha(.33)
+
+        return ax
+
     # @staticmethod
-    def draw_arpu_probability_distributions(self, ax=None):
-        ax = ax or plt.subplots()[1]
+    def draw_probability_distributions(ab_test, metric="arpu", ax=None, bins=100):
+        if ax is None:
+            fig, ax = plt.subplots()
 
-        ax.hist(self.sampled_arpu_a_, 100, lw=1, alpha=0.5);
-        ax.hist(self.sampled_arpu_b_, 100, lw=1, alpha=0.5);
+        if metric == "arpu":
+            prop_a = ab_test.sampled_arpu_a_
+            prop_b = ab_test.sampled_arpu_b_
+        else:
+            raise ValueError('metric not recognised')
 
+        ha = np.histogram(prop_a, bins=bins)
+        hb = np.histogram(prop_b, bins=bins)
 
-    def draw_probability_distributions(self, metric="arpu", ax=None):
-        ax = ax or plt.subplots()[1]
+        xa, ya = ha[1][1:], ha[0]
+        xb, yb = hb[1][1:], hb[0]
 
-        prop_a = f"sampled_{metric}_a"
-        prop_b = f"sampled_{metric}_b"
+        ax.plot(xa, ya)
+        ax.plot(xb, yb)
 
-        ax.hist(self[prop_a], 100, lw=1, alpha=0.5);
-        ax.hist(self[prop_b], 100, lw=1, alpha=0.5);
+        hdi_bounds_a = ab_test.hdi_of_mcmc(ab_test.sampled_arpu_a_)
+        hdi_a = np.logical_and(hdi_bounds_a["lower"] <= xa, xa <= hdi_bounds_a["upper"])
+
+        hdi_bounds_b = ab_test.hdi_of_mcmc(ab_test.sampled_arpu_b_)
+        hdi_b = np.logical_and(hdi_bounds_b["lower"] <= xb, xb <= hdi_bounds_b["upper"])
+
+        ax.fill_between(xa, y1=0, y2=ya, where=hdi_a, alpha=.5)
+        ax.fill_between(xb, y1=0, y2=yb, where=hdi_b, alpha=.5)
+
+        return ax
+
+    def draw_sampled_distribution_of_arpu_difference(ab_test, ax=None):
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        x = ab_test.sampled_arpu_diff_
+        hdi = ab_test.hdi_of_mcmc(ab_test.sampled_arpu_diff_)
+
+        N, bins, patches = ax.hist(x, 100, lw=1, edgecolor="white", );
+        ax.axvline(0, c="k", lw=2, alpha=.5)
+
+        for i in range(len(bins[bins <= hdi["lower"]])):
+            patches[i].set_alpha(.33)
+
+        for i in range(len(bins[bins >= hdi["upper"]])):
+            patches[-i-1].set_alpha(.33)
+
+        return ax

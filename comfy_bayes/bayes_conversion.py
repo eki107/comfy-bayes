@@ -180,7 +180,7 @@ class ConversionTest:
 
     def draw_probability_distributions(self, ax=None, title=None):
         if ax is None:
-            ax = plt.axes()
+            fig, ax = plt.subplots()
 
         # get beta functions as pmf of our observations
         a_beta_func = self.beta_func_a
@@ -215,11 +215,11 @@ class ConversionTest:
         # add legend
         ax.legend()
 
-        return dplot
+        return ax
 
     def draw_approximate_distribution_of_difference(self, samples=1_000_000, alpha=.05, ax=None, title=None):
         if ax is None:
-            ax = plt.axes()
+            fig, ax = plt.subplots()
 
         i = alpha / 2, (1 - alpha / 2)
 
@@ -246,4 +246,4 @@ class ConversionTest:
         ax.set_title(title, loc="right")
         ax.set_xticklabels(["{:,.2%}".format(tick) for tick in ax.get_xticks()])
 
-        return dplot
+        return ax
