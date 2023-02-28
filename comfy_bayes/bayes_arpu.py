@@ -53,12 +53,19 @@ class ARPUTest:
         self.sampled_arpu_a_ = (lambda_a / omega_a)
         self.sampled_arpu_b_ = (lambda_b / omega_b)
 
+        self.sampled_arppu_a_ = (1 / omega_a)
+        self.sampled_arppu_b_ = (1 / omega_b)
+        
+        self.sampled_conversion_a_ = lambda_a
+        self.sampled_conversion_b_ = lambda_b
+        
         self.sampled_conversion_diff_ = (lambda_b - lambda_a)
         self.sampled_arppu_diff_ = (1/omega_b - 1/omega_a)
         self.sampled_arpu_diff_ = ((lambda_b/omega_b) - (lambda_a/omega_a))
 
         self.hdi_arpu_ = self.hdi_of_mcmc(self.sampled_arpu_diff_)
 
+        # arpu
         self.probability_arpu_b_better_than_a_ = (self.sampled_arpu_b_[self.sampled_arpu_b_ > self.sampled_arpu_a_].size
                                                   / self.sample_size)
 
@@ -67,7 +74,17 @@ class ARPUTest:
 
         self.expected_arpu_loss_b_over_a_ = (-self.sampled_arpu_diff_[-self.sampled_arpu_diff_ > 0].sum()
                                              / self.sample_size)
-
+        
+        # arppu
+        self.probability_arppu_b_better_than_a_ = (self.sampled_arppu_b_[self.sampled_arppu_b_ > self.sampled_arppu_a_].size / self.sample_size)
+        self.expected_arppu_uplift_b_over_a_ = (self.sampled_arppu_diff_[self.sampled_arppu_diff_ > 0].sum() / self.sample_size)
+        self.expected_arppu_loss_b_over_a_ = (-self.sampled_arppu_diff_[-self.sampled_arppu_diff_ > 0].sum() / self.sample_size)
+ 
+        # conversion
+        self.probability_conversion_b_better_than_a_ = (self.sampled_conversion_b_[self.sampled_conversion_b_ > self.sampled_conversion_a_].size / self.sample_size)
+        self.expected_conversion_uplift_b_over_a_ = (self.sampled_conversion_diff_[self.sampled_conversion_diff_ > 0].sum() / self.sample_size)
+        self.expected_conversion_loss_b_over_a_ = (-self.sampled_conversion_diff_[-self.sampled_conversion_diff_ > 0].sum() / self.sample_size)
+        
         return self
 
     @staticmethod
